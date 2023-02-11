@@ -28,3 +28,18 @@ jobs:
     # Runs a single command using the runners shell
     - name: Send greeting
       run: echo "Hello ${{ github.event.inputs.name }}"
+    - name: Checkout
+      uses: actions/checkout@v3.3.0
+    - name: Azure Login
+      uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.ROCCOS_SECRET }}
+    - name: Deploy Azure Resource Manager (ARM) Template
+      uses: Azure/arm-deploy@v1.0.9
+      with:
+        # Provide the scope of the deployment. Valid values are: 'resourcegroup', 'managementgroup', 'subscription'
+        scope: resourcegroup
+        subscriptionId: 4473dee2-2e85-4849-b421-5cc5baf520b5
+        # Provide the name of a resource group, only required for resource Group deployments.
+        resourceGroupName: DevopsRocco
+        template: ..\Source\ARM-Templates\container-webapp-template.json
